@@ -31,7 +31,7 @@ namespace PeasantVsOgre
 
                 Console.WriteLine("Peasant: Attack or Block?");
                 var userChoice = Console.ReadLine();
-                var ogreChoice = ogre.RandomNumberGeneration(); //Ogre is AI
+                var ogreChoice = ogre.RandomNumberGenerationD20(); //Ogre is AI
 
                 Console.WriteLine("");
 
@@ -65,50 +65,49 @@ namespace PeasantVsOgre
                         continue;
                 }
 
-                Console.WriteLine($"---Results for round {round}---");
+                if (userChoice == "Block" && ogreChoice > 10)
+                {
+                    Console.WriteLine("Both players chose to block, so nothing happened this round.");
+                }
             }
         }
 
-        ////GetAttackResults
-        //Calculate what each player did.
-        //Calculate 1 player's attacks or blocks.
-        //Calculate what % to take off incoming attack, if any.
-        //Output change in health for each player.
-        //Check if either player fell below 0. If so end loop above by returning "game over";
+        //GetAttackResults
         public static string GetAttackResult(PlayerStatSettings peasant, PlayerStatSettings ogre) {
 
             //Figure out amount to block. 
             var peasantBlockVal = ogre.attack - (ogre.attack * peasant.block);
             var ogreBlockVal = peasant.attack - (peasant.attack * ogre.block);
 
+            double ogreCounterVal = 0;
+            double peasantCounterVal = 0;
+
+            if(ogreBlockVal > 0)
+            {
+                Console.WriteLine("");
+                ogreCounterVal = ogre.CounterAttack(peasant.attack);
+            }
+            if(peasantBlockVal > 0)
+            {
+                Console.WriteLine("");
+                peasantCounterVal = peasant.CounterAttack(ogre.attack);
+            }
+
+            Console.WriteLine("");
+
             //calculate new player hp, factoring in amount that opponent dealt, along with amount player blocked.
-            var peasanthp = peasant.hp -= (ogre.attack - peasantBlockVal);
-            var ogrehp = ogre.hp -= (peasant.attack - ogreBlockVal);
+            var peasanthp = peasant.hp -= (ogre.attack - peasantBlockVal) + ogreCounterVal;
+            var ogrehp = ogre.hp -= (peasant.attack - ogreBlockVal) + peasantCounterVal;
 
-            
-            /*
-            Console.WriteLine("---");
-            Console.WriteLine($"peasantBlockVal {peasantBlockVal}");
-            Console.WriteLine($"ogreBlockVal {ogreBlockVal}");
-            Console.WriteLine("---");
-            Console.WriteLine($"peasant.block {peasant.block}");
-            Console.WriteLine($"peasant.attack {peasant.attack}");
-            Console.WriteLine("---");
-            Console.WriteLine($"ogre.block {ogre.block}");
-            Console.WriteLine($"ogre.attack {ogre.attack}");
-            Console.WriteLine("---");
-            Console.WriteLine($"peasant.hp {peasant.hp}");
-            Console.WriteLine($"peasanthp after {peasanthp}");
-            Console.WriteLine($"ogre.hp {ogre.hp}");
-            Console.WriteLine($"ogrehp after {ogrehp}");
-            Console.WriteLine("---");
-            */
+            Console.WriteLine($"---ROUND RESULTS---");
 
-            Console.WriteLine($"Peasant hp: {peasanthp} -- took {ogre.attack - peasantBlockVal} damage, down from {(ogre.attack - peasantBlockVal) + peasanthp}");
-            Console.WriteLine($"Ogre hp: {ogrehp} -- took {peasant.attack - ogreBlockVal} damage, down from {(peasant.attack - ogreBlockVal) + ogrehp}");
+
+            Console.WriteLine($"Peasant hp: {peasanthp} -- took {ogre.attack - peasantBlockVal + ogreCounterVal} damage, down from {(ogre.attack - peasantBlockVal + ogreCounterVal) + peasanthp}");
+            Console.WriteLine($"Ogre hp: {ogrehp} -- took {peasant.attack - ogreBlockVal + peasantCounterVal} damage, down from {(peasant.attack - ogreBlockVal + peasantCounterVal) + ogrehp}");
             Console.WriteLine("-----------");
             Console.WriteLine("Press Enter for Next Round...");
             Console.ReadLine();
+            Console.Clear();
 
             if (ogrehp <= 0 || peasanthp <= 0)
             {

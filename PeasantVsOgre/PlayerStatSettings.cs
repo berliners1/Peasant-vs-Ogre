@@ -78,17 +78,17 @@ namespace PeasantVsOgre
             switch (D4Roll)
             {
                 case var x when x == 1:
-                    Console.WriteLine($"Also, {name} fails to counter.");
-                    return 0; //no counter attack damage
+                    Console.WriteLine($"Also, {name} counters back 25% of incoming {opponentAttack}, which is {opponentAttack * 0.25}");
+                    return opponentAttack * 0.25; //no counter attack damage
                 case var x when x == 2:
-                    Console.WriteLine($"Also, {name} counters back 20% of incoming {opponentAttack} damage, which is {opponentAttack * 0.20}");
-                    return opponentAttack * 0.20; //20% counter attack damage
+                    Console.WriteLine($"Also, {name} counters back 50% of incoming {opponentAttack} damage, which is {opponentAttack * 0.50}");
+                    return opponentAttack * 0.50; //50% counter attack damage
                 case var x when x == 3:
-                    Console.WriteLine($"Also, {name} counters back 40% of incoming {opponentAttack} damage, which is {opponentAttack * 0.40}");
-                    return opponentAttack * 0.40; //40% counter attack damage
-                case var x when x == 4:
                     Console.WriteLine($"Also, {name} counters back 100% of incoming {opponentAttack} damage, which is {opponentAttack * 1}");
-                    return opponentAttack; //100% counter attack damage
+                    return opponentAttack * 1; //100% counter attack damage
+                case var x when x == 4:
+                    Console.WriteLine($"Also, {name} counters back 250% of incoming {opponentAttack} damage, which is {opponentAttack * 2.5}");
+                    return opponentAttack * 2.5; //250% counter attack damage
                 default:
                     Console.WriteLine($"Is this ever happening? D4Roll is {D4Roll}");
                     return 1;
